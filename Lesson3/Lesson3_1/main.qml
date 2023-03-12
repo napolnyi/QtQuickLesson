@@ -128,7 +128,7 @@ Window {
 
     TextField {
         id: txt_find
-        x: 117
+        x: 100
         y: 77
         width: 375
         height: 37
@@ -162,6 +162,32 @@ Window {
                 PropertyChanges {target: btn_find ; opacity: 1 }
             }
         ]
+        onClicked: {
+            indicator.state = "busyRunning"
+
+        }
+    }
+    BusyIndicator{
+        id:indicator
+        x: 250
+        y: 100
+        running: false
+        State {
+            name: "busyRunning"
+            PropertyChanges { target: indicator; running: true }
+
+        }
+        State {
+            name: "busyStop"
+            PropertyChanges { target: indicator; running: false }
+
+        }
+        Transition {
+            to: "busyRunning"
+            reversible: true
+            PropertyAnimation {property: "running"; duration: 1000}
+        }
+
     }
 
 }
