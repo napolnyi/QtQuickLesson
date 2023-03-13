@@ -63,7 +63,6 @@ Window {
         width: 283
         height: 55
         opacity: 0
-        visible: true
         color: "#f90f0f"
         text: qsTr("the username or password is not entered correctly")
         horizontalAlignment: Text.AlignHCenter
@@ -138,12 +137,21 @@ Window {
             State {
                 name: "txt_find_completed"
                 PropertyChanges {target: txt_find; opacity: 1}
+            },
+            State {
+                name: "txt_find_result"
+                PropertyChanges {target: txt_find; opacity: 0}
+
             }
         ]
         transitions: [
             Transition {
                 to: "txt_find_completed"
-                PropertyAnimation {property: "opacity"; duration: 1000}
+                PropertyAnimation {property: "opacity"; duration: 2000}
+            },
+            Transition {
+                to: "txt_find_result"
+                PropertyAnimation {property: "opacity"; duration: 2000}
             }
         ]
     }
@@ -160,35 +168,70 @@ Window {
             State {
                 name: "btn_find_completed"
                 PropertyChanges {target: btn_find ; opacity: 1 }
+            },
+            State {
+                name: "btn_find_result"
+                PropertyChanges {target: btn_find; opacity: 0}
+
+            }
+        ]
+        transitions: [
+            Transition {
+                to: "btn_find_completed"
+                PropertyAnimation {property: "opacity"; duration: 2000}
+            },
+            Transition {
+                to: "btn_find_result"
+                PropertyAnimation {property: "opacity"; duration: 2000}
             }
         ]
         onClicked: {
-            indicator.state = "busyRunning"
-
+            indicator.running = true
+            animBusy.start()
+            btn_find.state = "btn_find_result"
+            txt_find.state = "txt_find_result"
+            txt_result_find.state = "txt_result_find_visible"
         }
     }
-    BusyIndicator{
+    BusyIndicator {
         id:indicator
-        x: 250
+        x: 28
         y: 100
         running: false
-        State {
-            name: "busyRunning"
-            PropertyChanges { target: indicator; running: true }
-
-        }
-        State {
-            name: "busyStop"
-            PropertyChanges { target: indicator; running: false }
-
-        }
-        Transition {
-            to: "busyRunning"
-            reversible: true
-            PropertyAnimation {property: "running"; duration: 1000}
-        }
-
     }
+     PropertyAnimation {
+         id: animBusy
+         target: indicator
+         property: "running"
+         duration: 2000
+         to: false
+     }
+
+     TextArea {
+         id: txt_result_find
+         x: 153
+         y: 183
+         width: 332
+         height: 162
+         opacity: 0
+         visible: false
+         horizontalAlignment: Text.AlignHCenter
+         font.bold: true
+         font.pointSize: 10
+         placeholderText: qsTr("these are the search results")
+         states: [
+             State {
+                 name: "txt_result_find_visible"
+                 PropertyChanges {target: txt_result_find; visible: true; opacity: 1  }
+             }
+         ]
+         transitions: [
+             Transition {
+                 to: "txt_result_find_visible"
+                 PropertyAnimation {property: "opacity"; duration: 5000}
+             }
+         ]
+     }
 
 }
 
